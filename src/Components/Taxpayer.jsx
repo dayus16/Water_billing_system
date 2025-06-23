@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoIosTrash } from "react-icons/io";
 import { toast } from "react-toastify";
+import { FaEdit } from "react-icons/fa";
 
 const Taxpayer = () => {
   const [showModal, setShowModal] = useState(false);
@@ -18,11 +19,74 @@ const Taxpayer = () => {
   const [stateList, setStateList] = useState([]);
   const [lgaList, setLgaList] = useState([]);
   const [townList, setTownList] = useState([]);
-  const [result, setResult] = useState("")
+  const [result, setResult] = useState("");
+  const [taxpayers, setTaxpayers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTaxpayer, setSelectedTaxpayer] = useState(null);
+  const [deleteTaxpayer, setDeleteTaxpayer] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const resetForm = () => {
+    setFullname("");
+    setEmail("");
+    setPhoneNumber("");
+    setStreet("");
+    setAddress("");
+    setState("");
+    setLga("");
+    setTown("");
+    setEmploymentStatus("");
+    setLgaList([]);
+    setTownList([]);
+  };
+
+  const handleDeleteClick = (taxpayer) => {
+    setSelectedTaxpayer(taxpayer);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedTaxpayer(null);
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Deleting taxpayer with ID:", selectedTaxpayer.id);
+    handleDeleteButton();
+  };
+
+  const handleDeleteButton = async () => {
+    setDeleteTaxpayer("deleting....");
+    try {
+      const res = await fetch(
+        `https://water-billing-72y7.onrender.com/api/v1/taxpayers/${selectedTaxpayer.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await res.json;
+      console.log(data);
+      if (res.ok) {
+        console.log("taxpayer deleted successfully");
+        toast.success("taxpayer deleted successfully");
+        setTaxpayers((prevTaxpayers) =>
+          prevTaxpayers.filter((tax) => tax.id !== selectedTaxpayer.id)
+        );
+        setIsModalOpen(false);
+
+        setDeleteTaxpayer("");
+      } else {
+        console.log(data.message);
+        toast.error("failed to delete taxpayer", data.message);
+      }
+    } catch (err) {
+      console.error("failed to delete taxpayer", err);
+    }
+  };
 
   const handleSaveBtn = async (e) => {
     e.preventDefault();
-    setResult('Loading....')
+    setResult("Loading....");
     try {
       const res = await fetch(
         `https://water-billing-72y7.onrender.com/api/v1/taxpayers`,
@@ -48,12 +112,17 @@ const Taxpayer = () => {
       console.log(data);
       if (res.ok) {
         toast.success("taxpayer created successfully");
-        setResult("")
+        setTimeout(() => {
+          setShowModal(false);
+          handleTaxpayer();
+          resetForm("");
+        }, 2000);
+        setResult("");
         console.log("taxpayer created successfully");
       } else {
         toast.error(data.message);
         console.log(data.message);
-        setResult("Save")
+        setResult("Save");
       }
     } catch (error) {
       console.error("Fetch error:", error);
@@ -75,6 +144,7 @@ const Taxpayer = () => {
 
   useEffect(() => {
     handleState();
+    handleTaxpayer();
   }, []);
 
   const handleLga = async (stateId) => {
@@ -101,6 +171,20 @@ const Taxpayer = () => {
       setTownList(data.townDetails);
     } catch (err) {
       console.error("Failed to fetch towns:", err);
+    }
+  };
+
+  const handleTaxpayer = async () => {
+    try {
+      const res = await fetch(
+        `https://water-billing-72y7.onrender.com/api/v1/taxpayers`
+      );
+      const data = await res.json();
+      console.log(data.taxpayersDetails);
+      setTaxpayers(data.taxpayersDetails);
+      setIsLoading(false);
+    } catch (err) {
+      console.error("fail to retrieve taxpayers", err);
     }
   };
 
@@ -292,7 +376,7 @@ const Taxpayer = () => {
                     type="submit"
                     className="w-full bg-blue-700 text-white py-2 font-semibold cursor-pointer rounded hover:bg-blue-800"
                   >
-                    {result ? result : 'Save'}
+                    {result ? result : "Save"}
                   </button>
                 </form>
               </div>
@@ -321,25 +405,95 @@ const Taxpayer = () => {
                   State
                 </th>
                 <th scope="col" className="px-6 py-4">
+                  Lga
+                </th>
+                <th scope="col" className="px-6 py-4">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-neutral-200 dark:border-white/10">
-                <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                <td className="whitespace-nowrap px-6 py-4">08012345678</td>
-                <td className="whitespace-nowrap px-6 py-4">
-                  mark@example.com
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">Lagos</td>
-                <td className="whitespace-nowrap px-6 py-4">Edit | Delete</td>
-              </tr>
+              {isLoading ? (
+                <tr>
+                  <td colSpan="7" className="text-center py-4">
+                    Loading...
+                  </td>
+                </tr>
+              ) : taxpayers.length > 0 ? (
+                taxpayers.map((taxpayer, index) => (
+                  <tr
+                    key={taxpayer.id || index}
+                    className="border-b border-neutral-200 dark:border-white/10"
+                  >
+                    <td className="whitespace-nowrap px-6 py-4 font-medium">
+                      {index + 1}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {taxpayer.fullname}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {taxpayer.phone_number}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {taxpayer.email}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {taxpayer.State?.state || "N/A"}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {taxpayer.Lga?.lga || "N/A"}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      <button className="text-2xl cursor-pointer">
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="text-2xl cursor-pointer"
+                        type="button"
+                        onClick={() => handleDeleteClick(taxpayer)}
+                      >
+                        <IoIosTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-4">
+                    No taxpayers found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* ----------------Delete Modal--------------------- */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg max-w-md w-full text-center">
+            <h1 className="text-5xl font-bold">⚠</h1>
+            <h3 className="mb-5 text-lg font-normal text-gray-500">
+              Are you sure you want to delete {selectedTaxpayer.fullname}?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleConfirmDelete}
+                className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer"
+              >
+                {deleteTaxpayer ? deleteTaxpayer : "Yes, I'm sure"}
+              </button>
+              <button
+                onClick={handleCloseModal}
+                className="py-2.5 px-5 text-sm cursor-pointer font-medium text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 rounded-lg"
+              >
+                No, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
