@@ -36,8 +36,10 @@ const Taxpayer = () => {
     setLga("");
     setTown("");
     setEmploymentStatus("");
+    setStateList([]);
     setLgaList([]);
     setTownList([]);
+    setSelectedTaxpayer(null);
   };
 
   const handleDeleteClick = (taxpayer) => {
@@ -73,8 +75,6 @@ const Taxpayer = () => {
           prevTaxpayers.filter((tax) => tax.id !== selectedTaxpayer.id)
         );
         setIsModalOpen(false);
-
-        setDeleteTaxpayer("");
       } else {
         console.log(data.message);
         toast.error("failed to delete taxpayer", data.message);
@@ -84,48 +84,74 @@ const Taxpayer = () => {
     }
   };
 
+  const handleEditClick = (taxpayer) => {
+    setSelectedTaxpayer(taxpayer);
+    setFullname(taxpayer.fullname);
+    setEmail(taxpayer.email);
+    setPhoneNumber(taxpayer.phone_number);
+    setStreet(taxpayer.street);
+    setAddress(taxpayer.address);
+    setState(taxpayer.state_id);
+    setLga(taxpayer.lga_id);
+    setTown(taxpayer.town_id);
+    setEmploymentStatus(taxpayer.employment_status);
+    handleLga(taxpayer.state_id);
+    handleTown(taxpayer.lga_id);
+    setShowModal(true);
+  };
+
   const handleSaveBtn = async (e) => {
     e.preventDefault();
-    setResult("Loading....");
+    setResult("Creating....");
+
+    const url = selectedTaxpayer
+      ? `https://water-billing-72y7.onrender.com/api/v1/taxpayers/${selectedTaxpayer.id}`
+      : `https://water-billing-72y7.onrender.com/api/v1/taxpayers`;
+
+    const method = selectedTaxpayer ? "PUT" : "POST";
+
     try {
-      const res = await fetch(
-        `https://water-billing-72y7.onrender.com/api/v1/taxpayers`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullname,
-            email,
-            phone_number: phoneNumber,
-            street,
-            address,
-            state_id: state,
-            lga_id: lga,
-            town_id: town,
-            employment_status: employmentStatus,
-          }),
-        }
-      );
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullname,
+          email,
+          phone_number: phoneNumber,
+          street,
+          address,
+          state_id: state,
+          lga_id: lga,
+          town_id: town,
+          employment_status: employmentStatus,
+        }),
+      });
+
       const data = await res.json();
       console.log(data);
+
       if (res.ok) {
-        toast.success("taxpayer created successfully");
+        toast.success(
+          selectedTaxpayer
+            ? "Taxpayer updated successfully"
+            : "Taxpayer created successfully"
+        );
+
         setTimeout(() => {
+          resetForm("");
           setShowModal(false);
           handleTaxpayer();
-          resetForm("");
+          setSelectedTaxpayer(null);
         }, 2000);
+
         setResult("");
-        console.log("taxpayer created successfully");
       } else {
         toast.error(data.message);
-        console.log(data.message);
         setResult("Save");
       }
     } catch (error) {
       console.error("Fetch error:", error);
+      toast.error("No internet connection", error);
     }
   };
 
@@ -315,7 +341,7 @@ const Taxpayer = () => {
                   </div>
                   <div className="flex gap-2">
                     <select
-                      className="flex-1 py-1 px-3 border  outline-blue-200 rounded text-gray-700"
+                      className="flex-1 py-1 px-3 border border-gray-300   outline-blue-200 rounded text-gray-700"
                       value={state}
                       onChange={(e) => {
                         const selectedState = e.target.value;
@@ -331,7 +357,7 @@ const Taxpayer = () => {
                       ))}
                     </select>
                     <select
-                      className="flex-1 py-1 px-3 border  outline-blue-200 rounded text-gray-700"
+                      className="flex-1 py-1 px-3 border border-gray-300   outline-blue-200 rounded text-gray-700"
                       value={lga}
                       onChange={(e) => {
                         const selectedLgaId = e.target.value;
@@ -376,7 +402,7 @@ const Taxpayer = () => {
                     type="submit"
                     className="w-full bg-blue-700 text-white py-2 font-semibold cursor-pointer rounded hover:bg-blue-800"
                   >
-                    {result ? result : "Save"}
+                    {result ? result : "Create"}
                   </button>
                 </form>
               </div>
@@ -415,7 +441,7 @@ const Taxpayer = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
+                  <td colSpan="6" className="text-center py-4">
                     Loading...
                   </td>
                 </tr>
@@ -444,7 +470,10 @@ const Taxpayer = () => {
                       {taxpayer.Lga?.lga || "N/A"}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
-                      <button className="text-2xl cursor-pointer">
+                      <button
+                        className="text-2xl cursor-pointer"
+                        onClick={() => handleEditClick(taxpayer)}
+                      >
                         <FaEdit />
                       </button>
                       <button
@@ -459,7 +488,7 @@ const Taxpayer = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-4">
+                  <td colSpan="6" className="text-center py-4">
                     No taxpayers found.
                   </td>
                 </tr>

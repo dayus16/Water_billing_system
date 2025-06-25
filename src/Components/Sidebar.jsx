@@ -18,7 +18,7 @@ const Sidebar = () => {
         <Link to="/layout">
           <li
             title="Dashboard"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaTachometerAlt className="text-xl" />
             <span className="hidden md:inline md:ml-2">Dashboard</span>
@@ -27,7 +27,7 @@ const Sidebar = () => {
         <Link to="/taxpayer">
           <li
             title="Taxpayer"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaUser className="text-xl" />
             <span className="hidden md:inline md:ml-2">Taxpayer</span>
@@ -36,7 +36,7 @@ const Sidebar = () => {
         <Link to="/building">
           <li
             title="Building"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaBox className="text-xl" />
             <span className="hidden md:inline md:ml-2">Building</span>
@@ -45,7 +45,7 @@ const Sidebar = () => {
         <Link to="/assessment">
           <li
             title="Assessment"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaUser className="text-xl" />
             <span className="hidden md:inline md:ml-2">Assessment</span>
@@ -54,7 +54,7 @@ const Sidebar = () => {
         <Link to="/bill">
           <li
             title="Bill payment"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaBuilding className="text-xl" />
             <span className="hidden md:inline md:ml-2">Bill Payment</span>
@@ -63,7 +63,7 @@ const Sidebar = () => {
         <Link to="/">
           <li
             title="Logout"
-            className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
+            className="flex flex-col md:flex-row items-center justify-center md:justify-start py-3 px-2 hover:bg-blue-600 hover:text-white rounded cursor-pointer"
           >
             <FaPowerOff className="text-xl" />
             <span className="hidden md:inline md:ml-2">Logout</span>

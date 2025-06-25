@@ -44,7 +44,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      setLogin("Network error");
+      setLogin("");
+      toast.error('Network error', error)
     }
   };
   return (
