@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./Components/Login";
-import Layout from "./Components/Layout";
+import Homepage from "./Components/Homepage";
 import { ToastContainer } from "react-toastify";
 import Taxpayer from "./Components/Taxpayer";
 import Building from "./Components/Building";
 import Nopage from "./Components/Nopage";
-// import Building from "./Components/Building";
-// import Assessment from "./Components/Assessment";
-// import Bill from "./Components/Bill";
+import Assessment from "./Components/Assessment";
+import Bill from "./Components/Bill";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,10 +16,50 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/layout" element={<Layout />}></Route>
-          <Route path="/taxpayer" element={<Taxpayer />} />
+
+          <Route
+            path="/homepage"
+            element={
+              <ProtectedRoute>
+                <Homepage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/taxpayer"
+            element={
+              <ProtectedRoute>
+                <Taxpayer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/building"
+            element={
+              <ProtectedRoute>
+                <Building />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/assessment"
+            element={
+              <ProtectedRoute>
+                <Assessment />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bill"
+            element={
+              <ProtectedRoute>
+                <Bill />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="*" element={<Nopage />} />
-          <Route path="/building" element={<Building />} />
         </Routes>
       </BrowserRouter>
     </div>

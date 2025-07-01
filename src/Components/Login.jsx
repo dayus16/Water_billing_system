@@ -33,10 +33,11 @@ const Login = () => {
       if (res.ok) {
         console.log("Login successful");
         localStorage.setItem("token", data.token);
+        localStorage.setItem("email", email);
         toast.success("Login successful");
         setLogin("Login");
         setTimeout(() => {
-          navigate("/layout");
+          navigate("/homepage");
         }, 3000);
       } else {
         setLogin("");
@@ -45,7 +46,7 @@ const Login = () => {
     } catch (error) {
       console.error("Fetch error:", error);
       setLogin("");
-      toast.error('Network error', error)
+      toast.error("Network error", error);
     }
   };
   return (

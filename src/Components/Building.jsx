@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
 import { FaEdit } from "react-icons/fa";
+import { IoIosTrash } from "react-icons/io";
 
 const Building = () => {
   const [showModal, setShowModal] = useState(false);
@@ -186,7 +187,7 @@ const Building = () => {
       const data = await res.json();
       console.log(data.buildingDetails);
       setBuildings(data.buildingDetails);
-      setIsLoading(false)
+      setIsLoading(false);
       if (res.ok) {
         console.log("building retrieved successfully");
       } else {
@@ -300,11 +301,18 @@ const Building = () => {
                       </tr>
                     </thead>
                     <tbody>
-                        {isLoading ? (<tr>
-                            <td colSpan="6" className="text-center py-4">Loading.....</td>
-                        </tr>) : buildings.length > 0 ? (
+                      {isLoading ? (
+                        <tr>
+                          <td colSpan="7" className="text-center py-4">
+                            Loading.....
+                          </td>
+                        </tr>
+                      ) : buildings.length > 0 ? (
                         buildings.map((building, index) => (
-                          <tr key={building.id || index} className="border-b border-neutral-200 dark:border-white/10">
+                          <tr
+                            key={building.id || index}
+                            className="border-b border-neutral-200 dark:border-white/10"
+                          >
                             <td className="whitespace-nowrap px-6 py-4 font-medium">
                               {index + 1}
                             </td>
@@ -324,8 +332,9 @@ const Building = () => {
                             <td className="whitespace-nowrap px-6 py-4">
                               {building.is_metered ? "metered" : "Unmetered"}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-2xl cursor-pointer">
+                            <td className=" px-6 py-4 text-2xl cursor-pointer flex">
                               <FaEdit />
+                              <IoIosTrash />
                             </td>
                           </tr>
                         ))
@@ -336,7 +345,6 @@ const Building = () => {
                           </td>
                         </tr>
                       )}
-                      
                     </tbody>
                   </table>
                 </div>
@@ -344,7 +352,7 @@ const Building = () => {
             </div>
           </div>
         </div>
-
+  
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm bg-opacity-50">

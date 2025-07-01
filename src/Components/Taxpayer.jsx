@@ -26,6 +26,8 @@ const Taxpayer = () => {
   const [deleteTaxpayer, setDeleteTaxpayer] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
+  
+
   const resetForm = () => {
     setFullname("");
     setEmail("");
@@ -102,7 +104,7 @@ const Taxpayer = () => {
 
   const handleSaveBtn = async (e) => {
     e.preventDefault();
-    setResult("Creating....");
+    setResult(selectedTaxpayer ? "Updating...." : "Creating....");
 
     const url = selectedTaxpayer
       ? `https://water-billing-72y7.onrender.com/api/v1/taxpayers/${selectedTaxpayer.id}`
@@ -147,7 +149,7 @@ const Taxpayer = () => {
         setResult("");
       } else {
         toast.error(data.message);
-        setResult("Save");
+        setResult("Create");
       }
     } catch (error) {
       console.error("Fetch error:", error);
@@ -402,7 +404,13 @@ const Taxpayer = () => {
                     type="submit"
                     className="w-full bg-blue-700 text-white py-2 font-semibold cursor-pointer rounded hover:bg-blue-800"
                   >
-                    {result ? result : "Create"}
+                    {selectedTaxpayer
+                      ? result
+                        ? result
+                        : "Update"
+                      : result
+                      ? result
+                      : "Create"}
                   </button>
                 </form>
               </div>
