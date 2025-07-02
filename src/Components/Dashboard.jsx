@@ -16,8 +16,8 @@ const Dashboard = ({ taxpayersCount, buildingCount }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
         <Card icon={<FaUser />} title="Taxpayer" value={taxpayersCount} />
         <Card icon={<FaBox />} title="Building" value={buildingCount} />
-        <Card icon={<FaClipboardList />} title="Assessment" value="12" />
-        <Card icon={<FaBuilding />} title="Bills" value="3" />
+        <Card icon={<FaClipboardList />} title="Assessment" value="" />
+        <Card icon={<FaBuilding />} title="Bills" value="" />
       </div>
     </div>
   );
